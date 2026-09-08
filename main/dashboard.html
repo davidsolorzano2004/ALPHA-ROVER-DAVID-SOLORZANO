@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rover Control Dashboard - Taller II</title>
+    <style>
+        :root {
+            --bg-dark: #0f171e;
+            --card-bg: #1a242d;
+            --accent-blue: #00d2ff;
+            --accent-orange: #f47920;
+            --accent-green: #00e676;
+            --accent-red: #ff5252;
+            --text-main: #e1e6eb;
+            --text-dim: #8b9b8b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0; padding: 15px;
+            box-sizing: border-box;
+        }
+        header {
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 15px 20px; border-radius: 10px;
+            margin-bottom: 15px; border: 1px solid #2a3744;
+        }
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 8px; font-weight: bold;
+            padding: 5px 12px; border-radius: 20px; background: #101c24; border: 1px solid #2a3744;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-red); }
+        .dot.online { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        
+        .grid-layout {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px;
+        }
+        .card {
+            background: var(--card-bg); border-radius: 10px; padding: 15px;
+            border: 1px solid #2a3744; display: flex; flex-direction: column; gap: 10px;
+        }
+        .card h3 { margin: 0 0 5px 0; font-size: 0.95rem; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .sensor-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #101c24; padding: 10px; border-radius: 6px; font-weight: bold;
+        }
+        .val-highlight { color: var(--accent-orange); font-size: 1.1rem; }
+        .badge-level {
+            padding: 3px 8px; border-radius: 4px; font-size: 0.85rem; text-transform: uppercase; background: #2a3744;
+        }
+        
+        /* Control D-PAD */
+        .dpad-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 220px; margin: 0 auto; }
+        .btn-cmd {
+            background: #24323f; color: var(--accent-blue); border: 1px solid #3a4b5c;
+            padding: 15px; border-radius: 8px; font-size: 1.2rem; cursor: pointer; transition: 0.1s;
+        }
+        .btn-cmd:active { background: var(--accent-blue); color: #000; }
+        .btn-stop { background: #5c2424; color: var(--accent-red); border-color: #803030; }
+        .btn-stop:active { background: var(--accent-red); color: #fff; }
+        
+        /* Video Stream Placeholder */
+        .video-box {
+            background: #000; border-radius: 8px; height: 220px;
+            display: flex; align-items: center; justify-content: center; color: var(--text-dim); border: 1px dashed #3a4b5c;
+        }
+        
+        input[type=range] { width: 100%; accent-color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h2 style="margin:0; font-size: 1.2rem;">ROVER CONTROL DASHBOARD</h2>
+            <small style="color: var(--text-dim);">Taller de Electrónica II - Unibagué</small>
+        </div>
+        <div class="status-badge">
+            <span id="status-dot" class="dot"></span>
+            <span id="status-text">Disconnected</span>
+        </div>
+    </header>
+
+    <div class="grid-layout">
+        <!-- ÁREA DE VISIÓN -->
+        <div class="card" style="grid-column: span 1;">
+            <h3>Live Video Stream (CAM)</h3>
+            <div class="video-box">Sin Señal de Cámara</div>
+        </div>
+
+        <!-- BATERÍAS Y NIVELES -->
+        <div class="card">
+            <h3>Alimentación y Baterías</h3>
+            <div class="sensor-row">
+                <span>Batería 1 (11.1V System)</span>
+                <span id="vbat1" class="val-highlight">-- V</span>
+            </div>
+            <div class="sensor-row">
+                <span>Batería 2 (22.2V Motors)</span>
+                <span id="vbat2" class="val-highlight">-- V</span>
+            </div>
+            
+            <h3 style="margin-top: 10px;">Luz Control (PWM)</h3>
+            <input type="range" min="0" max="255" value="0" onchange="sendPwm(this.value)">
+        </div>
+
+        <!-- AMBIENTAL Y MICRÓFONO -->
+        <div class="card">
+            <h3>Telemetría Ambiental</h3>
+            <div class="sensor-row">
+                <span>Temperatura (T)</span>
+                <span id="temp" class="val-highlight">-- °C</span>
+            </div>
+            <div class="sensor-row">
+                <span>Humedad (H)</span>
+                <span id="hum" class="val-highlight">-- %</span>
+            </div>
+            <div class="sensor-row">
+                <span>Micrófono Voltaje</span>
+                <span id="mic-v" class="val-highlight">-- V</span>
+            </div>
+            <div class="sensor-row">
+                <span>Nivel de Ruido</span>
+                <span id="mic-lbl" class="badge-level">--</span>
+            </div>
+        </div>
+
+        <!-- D-PAD CONTROL -->
+        <div class="card">
+            <h3>Control Pad (D-PAD)</h3>
+            <div class="dpad-container">
+                <div></div>
+                <button class="btn-cmd" onmousedown="cmd('AVANZAR')" onmouseup="cmd('PARAR')">▲</button>
+                <div></div>
+                <button class="btn-cmd" onmousedown="cmd('IZQUIERDA')" onmouseup="cmd('PARAR')">◄</button>
+                <button class="btn-cmd btn-stop" onclick="cmd('PARAR')">■</button>
+                <button class="btn-cmd" onmousedown="cmd('DERECHA')" onmouseup="cmd('PARAR')">►</button>
+                <div></div>
+                <button class="btn-cmd" onmousedown="cmd('RETROCEDER')" onmouseup="cmd('PARAR')">▼</button>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+	<script>
+	        function cmd(dir) {
+	            fetch('/control?dir=' + dir).catch(e => console.error(e));
+	        }
+	        function sendPwm(val) {
+	            fetch('/light?val=' + val).catch(e => console.error(e));
+	        }
+
+	        // --- NUEVA LÓGICA DE TECLADO ---
+	        let teclaActiva = null; // Evita envíos múltiples si dejas la tecla presionada
+
+	        window.addEventListener('keydown', (e) => {
+	            if (teclaActiva === e.key) return; 
+	            teclaActiva = e.key;
+	            
+	            if (e.key === 'ArrowUp') cmd('AVANZAR');
+	            else if (e.key === 'ArrowDown') cmd('RETROCEDER');
+	            else if (e.key === 'ArrowLeft') cmd('IZQUIERDA');
+	            else if (e.key === 'ArrowRight') cmd('DERECHA');
+	        });
+
+	        window.addEventListener('keyup', (e) => {
+	            const teclasPermitidas = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+	            if (teclasPermitidas.includes(e.key)) {
+	                cmd('PARAR');
+	                teclaActiva = null; // Libera la tecla
+	            }
+	        });
+	        // -------------------------------
+
+	        setInterval(() => {
+	            fetch('/telemetry')
+	                .then(r => { if(!r.ok) throw new Error(); return r.json(); })
+	                .then(d => {
+	                    document.getElementById('status-dot').className = 'dot online';
+	                    document.getElementById('status-text').innerText = 'Connected';
+	                    document.getElementById('vbat1').innerText = (d.vbat1 || 0).toFixed(2) + ' V';
+	                    document.getElementById('vbat2').innerText = (d.vbat2 || 0).toFixed(2) + ' V';
+	                    document.getElementById('temp').innerText = (d.temp || 0).toFixed(1) + ' °C';
+	                    document.getElementById('hum').innerText = (d.hum || 0).toFixed(1) + ' %';
+	                    document.getElementById('mic-v').innerText = (d.mic_v || 0).toFixed(3) + ' V';
+	                    
+	                    const micLbl = document.getElementById('mic-lbl');
+	                    micLbl.innerText = d.mic_lvl || 'silencio';
+	                    if(d.mic_lvl === 'alto') micLbl.style.background = '#ff5252';
+	                    else if(d.mic_lvl === 'medio') micLbl.style.background = '#f47920';
+	                    else micLbl.style.background = '#2a3744';
+	                })
+	                .catch(() => {
+	                    document.getElementById('status-dot').className = 'dot';
+	                    document.getElementById('status-text').innerText = 'Disconnected';
+	                });
+	        }, 1500);
+	    </script>
+</body>
+</html>
