@@ -15,57 +15,123 @@
             --text-main: #e1e6eb;
             --text-dim: #8b9b8b;
         }
-        body {
+
+        html, body {
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            margin: 0; padding: 15px;
-            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* HEADER CON LOGO DE UNIBAGUÉ Y TÍTULO ESTILIZADO */
         header {
-            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-            background: var(--card-bg); padding: 15px 20px; border-radius: 10px;
-            margin-bottom: 15px; border: 1px solid #2a3744;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card-bg); padding: 8px 16px; border-radius: 8px;
+            margin-bottom: 10px; border: 1px solid #2a3744; flex-shrink: 0;
         }
-        .status-badge {
-            display: inline-flex; align-items: center; gap: 8px; font-weight: bold;
-            padding: 5px 12px; border-radius: 20px; background: #101c24; border: 1px solid #2a3744;
-        }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-red); }
-        .dot.online { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
         
-        .grid-layout {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px;
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
+        .header-title-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .header-subtitle {
+            color: #e1e6eb;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 8px; font-weight: bold; font-size: 0.85rem;
+            padding: 4px 10px; border-radius: 15px; background: #101c24; border: 1px solid #2a3744;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-red); }
+        .dot.online { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+        
+        /* ESTRUCTURA DASHBOARD */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr 1fr;
+            gap: 10px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 0;
+        }
+
         .card {
-            background: var(--card-bg); border-radius: 10px; padding: 15px;
-            border: 1px solid #2a3744; display: flex; flex-direction: column; gap: 10px;
+            background: var(--card-bg); border-radius: 8px; padding: 10px 12px;
+            border: 1px solid #2a3744; display: flex; flex-direction: column; gap: 8px;
+            overflow: hidden;
         }
-        .card h3 { margin: 0 0 5px 0; font-size: 0.95rem; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
+        .card.flex-fill { flex: 1; }
+        .card h3 { margin: 0; font-size: 0.85rem; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; }
         
         .sensor-row {
             display: flex; justify-content: space-between; align-items: center;
-            background: #101c24; padding: 10px; border-radius: 6px; font-weight: bold;
+            background: #101c24; padding: 6px 10px; border-radius: 5px; font-size: 0.85rem; font-weight: bold;
         }
-        .val-highlight { color: var(--accent-orange); font-size: 1.1rem; }
+        .val-highlight { color: var(--accent-orange); font-size: 0.95rem; }
         .badge-level {
-            padding: 3px 8px; border-radius: 4px; font-size: 0.85rem; text-transform: uppercase; background: #2a3744;
+            padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; background: #2a3744; font-weight: bold;
         }
         
-        /* Control D-PAD */
-        .dpad-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 220px; margin: 0 auto; }
+        /* CONTROL PAD */
+        .dpad-container { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; 
+            max-width: 180px; margin: auto; width: 100%; 
+        }
         .btn-cmd {
             background: #24323f; color: var(--accent-blue); border: 1px solid #3a4b5c;
-            padding: 15px; border-radius: 8px; font-size: 1.2rem; cursor: pointer; transition: 0.1s;
+            padding: 12px 5px; border-radius: 6px; font-size: 1.1rem; cursor: pointer; transition: 0.1s;
+            display: flex; align-items: center; justify-content: center;
         }
         .btn-cmd:active { background: var(--accent-blue); color: #000; }
         .btn-stop { background: #5c2424; color: var(--accent-red); border-color: #803030; }
         .btn-stop:active { background: var(--accent-red); color: #fff; }
         
-        /* Video Stream Placeholder */
         .video-box {
-            background: #000; border-radius: 8px; height: 220px;
-            display: flex; align-items: center; justify-content: center; color: var(--text-dim); border: 1px dashed #3a4b5c;
+            background: #000; border-radius: 6px; flex: 1;
+            display: flex; align-items: center; justify-content: center; color: var(--text-dim);
+            border: 1px dashed #3a4b5c; font-size: 1rem; font-weight: 500; min-height: 0;
+        }
+
+        /* CANVAS ONDA DE BARRAS (AMBIENT SOUND) */
+        .mic-spectrum-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 60px;
+        }
+        #mic-canvas {
+            width: 100%;
+            height: 100%;
+            background: #101c24;
+            border-radius: 5px;
+            border: 1px solid #2a3744;
         }
         
         input[type=range] { width: 100%; accent-color: var(--accent-blue); }
@@ -74,130 +140,268 @@
 <body>
 
     <header>
-        <div>
-            <h2 style="margin:0; font-size: 1.2rem;">ROVER CONTROL DASHBOARD</h2>
-            <small style="color: var(--text-dim);">Taller de Electrónica II - Unibagué</small>
+        <div class="header-title-box">
+            <!-- LOGO UNIBAGUÉ VECTORIAL -->
+            
+            <div class="header-title-text">
+                <span>ROVER CONTROL DASHBOARD</span>
+                <span class="header-subtitle">- TALLER DE ELECTRÓNICA II</span>
+            </div>
         </div>
+
         <div class="status-badge">
             <span id="status-dot" class="dot"></span>
             <span id="status-text">Disconnected</span>
         </div>
     </header>
 
-    <div class="grid-layout">
-        <!-- ÁREA DE VISIÓN -->
-        <div class="card" style="grid-column: span 1;">
-            <h3>Live Video Stream (CAM)</h3>
-            <div class="video-box">Sin Señal de Cámara</div>
-        </div>
-
-        <!-- BATERÍAS Y NIVELES -->
-        <div class="card">
-            <h3>Alimentación y Baterías</h3>
-            <div class="sensor-row">
-                <span>Batería 1 (11.1V System)</span>
-                <span id="vbat1" class="val-highlight">-- V</span>
-            </div>
-            <div class="sensor-row">
-                <span>Batería 2 (22.2V Motors)</span>
-                <span id="vbat2" class="val-highlight">-- V</span>
-            </div>
-            
-            <h3 style="margin-top: 10px;">Luz Control (PWM)</h3>
-            <input type="range" min="0" max="255" value="0" onchange="sendPwm(this.value)">
-        </div>
-
-        <!-- AMBIENTAL Y MICRÓFONO -->
-        <div class="card">
-            <h3>Telemetría Ambiental</h3>
-            <div class="sensor-row">
-                <span>Temperatura (T)</span>
-                <span id="temp" class="val-highlight">-- °C</span>
-            </div>
-            <div class="sensor-row">
-                <span>Humedad (H)</span>
-                <span id="hum" class="val-highlight">-- %</span>
-            </div>
-            <div class="sensor-row">
-                <span>Micrófono Voltaje</span>
-                <span id="mic-v" class="val-highlight">-- V</span>
-            </div>
-            <div class="sensor-row">
-                <span>Nivel de Ruido</span>
-                <span id="mic-lbl" class="badge-level">--</span>
+    <div class="main-layout">
+        
+        <!-- COLUMNA 1: CÁMARA -->
+        <div class="col">
+            <div class="card flex-fill">
+                <h3>Live Video Stream (CAM)</h3>
+                <div class="video-box">Sin Señal de Cámara</div>
             </div>
         </div>
 
-        <!-- D-PAD CONTROL -->
-        <div class="card">
-            <h3>Control Pad (D-PAD)</h3>
-            <div class="dpad-container">
-                <div></div>
-                <button class="btn-cmd" onmousedown="cmd('AVANZAR')" onmouseup="cmd('PARAR')">▲</button>
-                <div></div>
-                <button class="btn-cmd" onmousedown="cmd('IZQUIERDA')" onmouseup="cmd('PARAR')">◄</button>
-                <button class="btn-cmd btn-stop" onclick="cmd('PARAR')">■</button>
-                <button class="btn-cmd" onmousedown="cmd('DERECHA')" onmouseup="cmd('PARAR')">►</button>
-                <div></div>
-                <button class="btn-cmd" onmousedown="cmd('RETROCEDER')" onmouseup="cmd('PARAR')">▼</button>
-                <div></div>
+        <!-- COLUMNA 2: BATERÍAS Y NAVEGACIÓN GPS -->
+        <div class="col">
+            <div class="card">
+                <h3>Alimentación y Baterías</h3>
+                <div class="sensor-row">
+                    <span>Batería 1 (11.1V System)</span>
+                    <span id="vbat1" class="val-highlight">-- V</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Batería 2 (22.2V Motors)</span>
+                    <span id="vbat2" class="val-highlight">-- V</span>
+                </div>
+                
+                <h3 style="margin-top: 4px;">Luz Control (PWM)</h3>
+                <input type="range" min="0" max="255" value="0" onchange="sendPwm(this.value)">
+            </div>
+
+            <div class="card flex-fill">
+                <h3>Geolocalización y Navegación</h3>
+                <div class="sensor-row">
+                    <span>Estado GPS</span>
+                    <span id="gps-status" class="badge-level">Buscando</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Latitud</span>
+                    <span id="gps-lat" class="val-highlight">--</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Longitud</span>
+                    <span id="gps-lon" class="val-highlight">--</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Altitud</span>
+                    <span id="gps-alt" class="val-highlight">-- m</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Satélites Visibles</span>
+                    <span id="gps-sats" class="val-highlight">--</span>
+                </div>
             </div>
         </div>
+
+        <!-- COLUMNA 3: CONTROL PAD Y TELEMETRÍA AMBIENTAL CON ESPECTRO DE BARRAS -->
+        <div class="col">
+            <div class="card">
+                <h3 style="text-align: center;">Control Pad (D-PAD)</h3>
+                <div class="dpad-container">
+                    <div></div>
+                    <button class="btn-cmd" onmousedown="cmd('AVANZAR')" onmouseup="cmd('PARAR')">▲</button>
+                    <div></div>
+                    <button class="btn-cmd" onmousedown="cmd('IZQUIERDA')" onmouseup="cmd('PARAR')">◄</button>
+                    <button class="btn-cmd btn-stop" onclick="cmd('PARAR')">■</button>
+                    <button class="btn-cmd" onmousedown="cmd('DERECHA')" onmouseup="cmd('PARAR')">►</button>
+                    <div></div>
+                    <button class="btn-cmd" onmousedown="cmd('RETROCEDER')" onmouseup="cmd('PARAR')">▼</button>
+                    <div></div>
+                </div>
+            </div>
+
+            <div class="card flex-fill">
+                <h3>Telemetría Ambiental</h3>
+                <div class="sensor-row">
+                    <span>Temperatura (T)</span>
+                    <span id="temp" class="val-highlight">-- °C</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Humedad (H)</span>
+                    <span id="hum" class="val-highlight">-- %</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Micrófono Voltaje</span>
+                    <span id="mic-v" class="val-highlight">-- V</span>
+                </div>
+                <div class="sensor-row">
+                    <span>Nivel de Ruido</span>
+                    <span id="mic-lbl" class="badge-level">--</span>
+                </div>
+
+                <!-- ESPECTRO / AMBIENT SOUND WAVEFORM -->
+                <div class="mic-spectrum-container">
+                    <span style="font-size: 0.75rem; color: var(--accent-blue); font-weight: bold; text-transform: uppercase;">Ambient Sound</span>
+                    <canvas id="mic-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-	<script>
-	        function cmd(dir) {
-	            fetch('/control?dir=' + dir).catch(e => console.error(e));
-	        }
-	        function sendPwm(val) {
-	            fetch('/light?val=' + val).catch(e => console.error(e));
-	        }
+    <script>
+        function cmd(dir) {
+            fetch('/control?dir=' + dir).catch(e => console.error(e));
+        }
+        function sendPwm(val) {
+            fetch('/light?val=' + val).catch(e => console.error(e));
+        }
 
-	        // --- NUEVA LÓGICA DE TECLADO ---
-	        let teclaActiva = null; // Evita envíos múltiples si dejas la tecla presionada
+        // --- ANIMACIÓN DE BARRAS VERTICALES DE AUDIO (WAVEFORM) ---
+        const canvas = document.getElementById('mic-canvas');
+        const ctx = canvas.getContext('2d');
+        let currentAmp = 4;
+        let targetAmp = 4;
+        let waveColor = '#00d2ff';
+        const numBars = 42;
+        let phases = Array.from({length: numBars}, () => Math.random() * Math.PI * 2);
 
-	        window.addEventListener('keydown', (e) => {
-	            if (teclaActiva === e.key) return; 
-	            teclaActiva = e.key;
-	            
-	            if (e.key === 'ArrowUp') cmd('AVANZAR');
-	            else if (e.key === 'ArrowDown') cmd('RETROCEDER');
-	            else if (e.key === 'ArrowLeft') cmd('IZQUIERDA');
-	            else if (e.key === 'ArrowRight') cmd('DERECHA');
-	        });
+        function animateWaveform() {
+            currentAmp += (targetAmp - currentAmp) * 0.12;
 
-	        window.addEventListener('keyup', (e) => {
-	            const teclasPermitidas = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-	            if (teclasPermitidas.includes(e.key)) {
-	                cmd('PARAR');
-	                teclaActiva = null; // Libera la tecla
-	            }
-	        });
-	        // -------------------------------
+            if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+            }
 
-	        setInterval(() => {
-	            fetch('/telemetry')
-	                .then(r => { if(!r.ok) throw new Error(); return r.json(); })
-	                .then(d => {
-	                    document.getElementById('status-dot').className = 'dot online';
-	                    document.getElementById('status-text').innerText = 'Connected';
-	                    document.getElementById('vbat1').innerText = (d.vbat1 || 0).toFixed(2) + ' V';
-	                    document.getElementById('vbat2').innerText = (d.vbat2 || 0).toFixed(2) + ' V';
-	                    document.getElementById('temp').innerText = (d.temp || 0).toFixed(1) + ' °C';
-	                    document.getElementById('hum').innerText = (d.hum || 0).toFixed(1) + ' %';
-	                    document.getElementById('mic-v').innerText = (d.mic_v || 0).toFixed(3) + ' V';
-	                    
-	                    const micLbl = document.getElementById('mic-lbl');
-	                    micLbl.innerText = d.mic_lvl || 'silencio';
-	                    if(d.mic_lvl === 'alto') micLbl.style.background = '#ff5252';
-	                    else if(d.mic_lvl === 'medio') micLbl.style.background = '#f47920';
-	                    else micLbl.style.background = '#2a3744';
-	                })
-	                .catch(() => {
-	                    document.getElementById('status-dot').className = 'dot';
-	                    document.getElementById('status-text').innerText = 'Disconnected';
-	                });
-	        }, 1500);
-	    </script>
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerY = canvas.height / 2;
+            const barGap = 2;
+            const barWidth = Math.max(2, (canvas.width - (numBars * barGap)) / numBars);
+
+            for (let i = 0; i < numBars; i++) {
+                phases[i] += 0.12 + (i % 3) * 0.02;
+                
+                // Forma envolvente del espectro de voz (más alto al centro, atenuado a los lados)
+                const envelope = Math.sin((i / numBars) * Math.PI); 
+                const mod = Math.sin(phases[i]) * 0.4 + Math.cos(phases[i] * 1.5) * 0.3 + 0.6;
+                
+                let barHeight = Math.max(3, currentAmp * envelope * mod);
+                barHeight = Math.min(canvas.height - 4, barHeight);
+
+                const x = i * (barWidth + barGap) + barGap / 2;
+                const y = centerY - barHeight / 2;
+
+                ctx.fillStyle = waveColor;
+                if (ctx.roundRect) {
+                    ctx.beginPath();
+                    ctx.roundRect(x, y, barWidth, barHeight, 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillRect(x, y, barWidth, barHeight);
+                }
+            }
+
+            requestAnimationFrame(animateWaveform);
+        }
+        animateWaveform();
+
+        // --- MANEJO DE TECLADO ---
+        let teclaActiva = null;
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+                if (teclaActiva === 'Space') return;
+                teclaActiva = 'Space';
+                cmd('PARAR');
+                return;
+            }
+
+            if (teclaActiva === e.key) return; 
+            teclaActiva = e.key;
+            
+            if (e.key === 'ArrowUp') cmd('AVANZAR');
+            else if (e.key === 'ArrowDown') cmd('RETROCEDER');
+            else if (e.key === 'ArrowLeft') cmd('IZQUIERDA');
+            else if (e.key === 'ArrowRight') cmd('DERECHA');
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault();
+                cmd('PARAR');
+                teclaActiva = null;
+                return;
+            }
+
+            const teclasPermitidas = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (teclasPermitidas.includes(e.key)) {
+                cmd('PARAR');
+                teclaActiva = null;
+            }
+        });
+
+        // --- TELEMETRÍA Y COLORES DEL ESPECTRO ---
+        setInterval(() => {
+            fetch('/telemetry')
+                .then(r => { if(!r.ok) throw new Error(); return r.json(); })
+                .then(d => {
+                    document.getElementById('status-dot').className = 'dot online';
+                    document.getElementById('status-text').innerText = 'Connected';
+                    
+                    document.getElementById('vbat1').innerText = (d.vbat1 || 0).toFixed(2) + ' V';
+                    document.getElementById('vbat2').innerText = (d.vbat2 || 0).toFixed(2) + ' V';
+                    
+                    document.getElementById('temp').innerText = (d.temp || 0).toFixed(1) + ' °C';
+                    document.getElementById('hum').innerText = (d.hum || 0).toFixed(1) + ' %';
+                    
+                    const micV = d.mic_v || 0;
+                    document.getElementById('mic-v').innerText = micV.toFixed(3) + ' V';
+                    
+                    const micLbl = document.getElementById('mic-lbl');
+                    const lvl = d.mic_lvl || 'silencio';
+                    micLbl.innerText = lvl;
+
+                    // CONTROL DE COLORES Y AMPLITUD DE LAS BARRAS
+                    if (lvl === 'alto') {
+                        micLbl.style.background = '#ff5252';
+                        waveColor = '#ff5252';
+                        targetAmp = Math.min(38, Math.max(24, micV * 40));
+                    } else if (lvl === 'medio' || lvl === 'bajo') {
+                        micLbl.style.background = '#f47920';
+                        waveColor = '#f47920';
+                        targetAmp = Math.min(24, Math.max(12, micV * 30));
+                    } else {
+                        micLbl.style.background = '#2a3744';
+                        waveColor = '#00d2ff';
+                        targetAmp = Math.max(4, micV * 12);
+                    }
+
+                    if (d.gps) {
+                        const gpsStatus = document.getElementById('gps-status');
+                        const isValid = d.gps.valid;
+                        
+                        gpsStatus.innerText = isValid ? 'FIJADO (OK)' : 'BUSCANDO...';
+                        gpsStatus.style.background = isValid ? '#00e676' : '#f47920';
+                        gpsStatus.style.color = isValid ? '#000' : '#fff';
+
+                        document.getElementById('gps-lat').innerText = (d.gps.lat || 0).toFixed(6) + '°';
+                        document.getElementById('gps-lon').innerText = (d.gps.lon || 0).toFixed(6) + '°';
+                        document.getElementById('gps-alt').innerText = (d.gps.alt || 0).toFixed(1) + ' m';
+                        document.getElementById('gps-sats').innerText = (d.gps.sats || 0) + ' sats';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('status-dot').className = 'dot';
+                    document.getElementById('status-text').innerText = 'Disconnected';
+                });
+        }, 1500);
+    </script>
 </body>
 </html>

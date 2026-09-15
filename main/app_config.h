@@ -1,13 +1,14 @@
 #pragma once
 
 #include "driver/gpio.h"
+#include "driver/uart.h"            // <-- NECESARIO PARA UART_NUM_2
 #include "esp_adc/adc_oneshot.h"
 
 // ============================================================================
 // CONFIGURACIÓN DE RED Y BROKER MQTT
 // ============================================================================
-#define WIFI_SSID "David"          // Reemplazar con el SSID de la red
-#define WIFI_PASS "26082005"       // Reemplazar con la clave Wi-Fi
+#define WIFI_SSID "David"          
+#define WIFI_PASS "26082005"       
 #define BROKER_URI "mqtt://broker.hivemq.com"
 
 // Tópicos MQTT generales
@@ -28,38 +29,41 @@
 #define PUBLISH_PERIOD_MS     5000
 #define ADC_PUBLISH_PERIOD_MS 2000
 #define DHT_PUBLISH_PERIOD_MS 3000
-#define DHT_RETRY_DELAY_MS 500 // margen de reposo del DHT11 antes de reintentar
+#define DHT_RETRY_DELAY_MS 500 
 
 // ============================================================================
 // CONFIGURACIÓN DE PINES Y PARÁMETROS DE SENSORES
 // ============================================================================
-#define DHT_PIN GPIO_NUM_16            // GPIO16 para DHT11
+#define DHT_PIN GPIO_NUM_16            
 
-// ADC1 (GPIO34, GPIO35, GPIO32)
 #define ADC1_CHANNEL_ENTRADA_1 ADC_CHANNEL_6   // GPIO34
 #define ADC1_CHANNEL_ENTRADA_2 ADC_CHANNEL_7   // GPIO35
-#define ADC1_CHANNEL_MIC       ADC_CHANNEL_4   // GPIO32 (Módulo MH AO)
+#define ADC1_CHANNEL_MIC       ADC_CHANNEL_4   // GPIO32 
 
 #define ADC_NUM_MUESTRAS 64
 #define MIC_NUM_MUESTRAS 200
 
-// Umbrales para micrófono (mV pico a pico) - usados en la clasificación de texto
-#define MIC_UMBRAL_SILENCIO_MV   30
-#define MIC_UMBRAL_BAJO_MV      100
-#define MIC_UMBRAL_MEDIO_MV     300
+#define MIC_UMBRAL_SILENCIO_MV   150
+#define MIC_UMBRAL_BAJO_MV      350
+#define MIC_UMBRAL_MEDIO_MV     700
 
-// ============================================================================
-// BARRA DE 5 LEDs (parpadeo secuencial fijo, independiente de los sensores)
-// ============================================================================
-// GPIOs 32, 34, 35 y 16 ya están ocupados por ADCs/DHT11. Estos 5 son pines
-// de salida de uso general, no son "strapping pins" de arranque y no
-// interfieren con el radio Wi-Fi/MQTT.
+// BARRA DE LEDs
 #define LED1_GPIO GPIO_NUM_4
 #define LED2_GPIO GPIO_NUM_18
 #define LED3_GPIO GPIO_NUM_23
 #define LED4_GPIO GPIO_NUM_21
 #define LED5_GPIO GPIO_NUM_22
 
-// Tiempo (ms) que cada LED permanece encendido antes de pasar al siguiente
-// en la secuencia. Bajar este valor = secuencia más rápida.
 #define LED_SEQUENCE_DELAY_MS 300
+
+// ============================================================================
+// CONFIGURACIÓN DE GPS U-BLOX LEA-6 (UART2) Y TELEMETRÍA
+// ============================================================================
+#define GPS_UART_NUM           UART_NUM_2
+#define GPS_TX_PIN             GPIO_NUM_5   // ESP32 TX2 -> GPS RXD
+#define GPS_RX_PIN             GPIO_NUM_17  // ESP32 RX2 <- GPS TXD
+#define GPS_BAUD_RATE          115200
+#define GPS_BUF_SIZE           1024
+
+#define TOPIC_PUB_TELEMETRIA   "taller2/dispositivoA/telemetria"
+#define TELEMETRY_PUB_PERIOD_MS 3000

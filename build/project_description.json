@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "app-template",
-    "project_version":    "4a00c87",
+    "project_version":    "d162313-dirty",
     "project_path":       "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1",
     "idf_path":           "C:/esp/v5.2.7/esp-idf",
     "build_dir":          "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build",
@@ -845,12 +845,12 @@
             "dir": "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main",
             "type": "LIBRARY",
             "lib": "__idf_main",
-            "reqs": [ "wifi_manager", "mqtt_manager", "adc_sensor", "dht11_sensor", "nvs_flash", "esp_http_server" ],
+            "reqs": [ "wifi_manager", "mqtt_manager", "adc_sensor", "dht11_sensor", "nvs_flash", "esp_http_server", "driver" ],
             "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/main/libmain.a",
-            "sources": [ "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/main.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/publisher_tasks.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/led_bar.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/dashboard.html.S" ],
+            "sources": [ "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/main.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/telemetry.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/webserver.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/publisher_tasks.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/led_bar.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main/gps_sensor.c", "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/dashboard.html.S" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {
@@ -2199,7 +2199,7 @@
             "prefix": "idf",
             "dir": "C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/main",
             "lib": "__idf_main",
-            "reqs": [ "wifi_manager", "mqtt_manager", "adc_sensor", "dht11_sensor", "nvs_flash", "esp_http_server" ],
+            "reqs": [ "wifi_manager", "mqtt_manager", "adc_sensor", "dht11_sensor", "nvs_flash", "esp_http_server", "driver" ],
             "priv_reqs": [],
             "managed_reqs": [],
             "managed_priv_reqs": [],
