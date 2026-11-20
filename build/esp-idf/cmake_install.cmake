@@ -439,6 +439,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/motor_driver/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/main/cmake_install.cmake")
 endif()
 

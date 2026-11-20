@@ -23,6 +23,20 @@ extern char g_mic_lvl[16];
 
 static const char *TAG = "MQTT_SISTEMA";
 
+// ============================================================================
+// FACTORES DEL DIVISOR RESISTIVO
+//
+// V_bateria = V_pin * (R_superior + R_inferior) / R_inferior
+//
+// Batería 1: R1 = 22k (superior), R2 = 10k (inferior)  -> factor 3.2
+// Batería 2: R7 = 56k (superior), R6 = 10k (inferior)  -> factor 6.6
+//
+// Si cambias las resistencias, actualiza los valores de aquí.
+// Para ajustar fino: factor nuevo = factor actual * (V real medido / V que muestra el dashboard)
+// ============================================================================
+#define VBAT1_FACTOR ((22.0f + 10.0f) / 10.0f)
+#define VBAT2_FACTOR ((56.0f + 10.0f) / 10.0f)
+
 // Tarea 1: Estado alternante ("1" / "0")
 void mqtt_publisher_task(void *pvParameters)
 {
@@ -44,19 +58,42 @@ void mqtt_publisher_task(void *pvParameters)
 // Tarea 2: Entradas Analógicas + Micrófono
 void adc_publisher_task(void *pvParameters)
 {
+    float piso_mic_mv = -1.0f;   // ruido de fondo adaptativo del micrófono (-1 = aún sin medir)
+
     while (1) {
         int raw1 = 0, raw2 = 0, raw_pp_mic = 0;
 
         int mv1 = adc_sensor_read_voltage_mv(ADC1_CHANNEL_ENTRADA_1, ADC_NUM_MUESTRAS, &raw1);
         int mv2 = adc_sensor_read_voltage_mv(ADC1_CHANNEL_ENTRADA_2, ADC_NUM_MUESTRAS, &raw2);
-        int mv_mic = adc_sensor_read_mic_amplitude_mv(ADC1_CHANNEL_MIC, MIC_NUM_MUESTRAS, &raw_pp_mic);
+        // Micrófono: pico máximo de varias ventanas cortas (así no se pierden sonidos intermitentes)
+        int mv_mic = 0;
+        for (int k = 0; k < MIC_REPETICIONES; k++) {
+            int mv_k = adc_sensor_read_mic_amplitude_mv(ADC1_CHANNEL_MIC, MIC_VENTANA_MS, &raw_pp_mic);
+            if (mv_k > mv_mic) mv_mic = mv_k;
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
 
-        float v1 = mv1 / 1000.0f;
-        float v2 = mv2 / 1000.0f;
+        // Voltaje en el pin -> voltaje REAL de la batería (multiplicando por el divisor)
+        float v1 = ((mv1 / 1000.0f) * VBAT1_FACTOR)+0.95f;
+        float v2 = ((mv2 / 1000.0f) * VBAT2_FACTOR)+2.25f;
         float v_mic = mv_mic / 1000.0f;
 
+        // Piso de ruido adaptativo: baja al instante cuando hay menos ruido y sube muy despacio
+        if (piso_mic_mv < 0.0f || (float)mv_mic < piso_mic_mv) {
+            piso_mic_mv = (float)mv_mic;
+        } else {
+            piso_mic_mv += MIC_PISO_SUBIDA * ((float)mv_mic - piso_mic_mv);
+        }
+        float piso_ref = (piso_mic_mv < MIC_PISO_MIN_MV) ? MIC_PISO_MIN_MV : piso_mic_mv;
+
         const char *nivel_mic = adc_sensor_classify_mic_level(
-            mv_mic, MIC_UMBRAL_SILENCIO_MV, MIC_UMBRAL_BAJO_MV, MIC_UMBRAL_MEDIO_MV);
+            mv_mic,
+            (int)(piso_ref * MIC_RATIO_SILENCIO),
+            (int)(piso_ref * MIC_RATIO_BAJO),
+            (int)(piso_ref * MIC_RATIO_MEDIO));
+
+        ESP_LOGI(TAG, "MIC amp=%d mV | piso=%.1f mV | x%.2f del piso | raw_pp=%d | nivel=%s",
+                 mv_mic, piso_ref, mv_mic / piso_ref, raw_pp_mic, nivel_mic);
 
         // =========================================================
         // ACTUALIZACIÓN DE VARIABLES GLOBALES PARA EL DASHBOARD
@@ -66,7 +103,7 @@ void adc_publisher_task(void *pvParameters)
         g_mic_v = v_mic;
         // Copiamos el texto de forma segura para no desbordar el array de 16 caracteres
         strncpy(g_mic_lvl, nivel_mic, sizeof(g_mic_lvl) - 1);
-        g_mic_lvl[sizeof(g_mic_lvl) - 1] = '\0'; 
+        g_mic_lvl[sizeof(g_mic_lvl) - 1] = '\0';
         // =========================================================
 
         char payload1[16];
@@ -81,7 +118,7 @@ void adc_publisher_task(void *pvParameters)
         int id2 = mqtt_manager_publish(TOPIC_PUB_ADC2, payload2);
         int id_mic = mqtt_manager_publish(TOPIC_PUB_MIC, payload_mic);
 
-        ESP_LOGI(TAG, "ADC1 (GPIO34): %s V (ID=%d) | ADC2 (GPIO35): %s V (ID=%d)", payload1, id1, payload2, id2);
+        ESP_LOGI(TAG, "VBAT1 (GPIO34): %s V (ID=%d) | VBAT2 (GPIO35): %s V (ID=%d)", payload1, id1, payload2, id2);
         ESP_LOGI(TAG, "Micrófono (GPIO32): %s (ID=%d)", payload_mic, id_mic);
 
         vTaskDelay(pdMS_TO_TICKS(ADC_PUBLISH_PERIOD_MS));

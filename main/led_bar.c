@@ -4,12 +4,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-// Los 5 GPIOs de los LEDs, en orden de secuencia (índice 0 = primero en encenderse).
-static const gpio_num_t LED_BAR_PINES[5] = {
-    LED1_GPIO,
-    LED2_GPIO,
-    LED3_GPIO,
-    LED4_GPIO,
+// GPIOs de la barra de LEDs, en orden de secuencia (índice 0 = primero en encenderse).
+// ID1 (GPIO 4) e ID2 (GPIO 18) ahora son las señales S1/S2 del RoboClaw (motor_driver),
+// e ID3/ID4 quedan sin usar, por eso ya no forman parte de la barra.
+static const gpio_num_t LED_BAR_PINES[] = {
+    // ID1,   // GPIO 4  -> S1 RoboClaw
+    // ID2,   // GPIO 18 -> S2 RoboClaw
+    // ID3,   // sin uso
+    // ID4,   // sin uso
     LED5_GPIO,
 };
 

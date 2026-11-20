@@ -1,14 +1,11 @@
 #include "mqtt_manager.h"
-
 #include "esp_log.h"
 
 static const char *TAG = "MQTT_SISTEMA";
 static esp_mqtt_client_handle_t client;
 static mqtt_manager_connected_cb_t connected_cb = NULL;
+static mqtt_manager_data_cb_t data_cb = NULL;
 
-// ============================================================================
-// EVENTOS MQTT
-// ============================================================================
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     esp_mqtt_event_handle_t event = event_data;
@@ -26,6 +23,9 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             ESP_LOGI(TAG, "--- MENSAJE RECIBIDO ---");
             ESP_LOGI(TAG, "Tópico : %.*s", event->topic_len, event->topic);
             ESP_LOGI(TAG, "Dato   : %.*s", event->data_len, event->data);
+            if (data_cb != NULL) {
+                data_cb(event->topic, event->topic_len, event->data, event->data_len);
+            }
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGE(TAG, "Ocurrió un error en el cliente MQTT");
@@ -38,6 +38,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 void mqtt_manager_set_connected_cb(mqtt_manager_connected_cb_t cb)
 {
     connected_cb = cb;
+}
+
+void mqtt_manager_set_data_cb(mqtt_manager_data_cb_t cb)
+{
+    data_cb = cb;
 }
 
 void mqtt_manager_start(const char *broker_uri)

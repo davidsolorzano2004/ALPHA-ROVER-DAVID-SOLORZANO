@@ -9,6 +9,7 @@
 #include "app_config.h"
 #include "telemetry.h"
 #include "webserver.h"
+#include "motor_driver.h"
 
 static const char *TAG = "WEBSERVER";
 
@@ -51,28 +52,25 @@ static esp_err_t telemetry_get_handler(httpd_req_t *req) {
 
 static esp_err_t control_get_handler(httpd_req_t *req) {
     char buf[100], dir[32];
-    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK && 
+    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK &&
         httpd_query_key_value(buf, "dir", dir, sizeof(dir)) == ESP_OK) {
-        
+
         ESP_LOGI(TAG, "Comando Motor Recibido: %s", dir);
-        int m[4] = {0, 0, 0, 0}; // md1, md2, mi1, mi2
 
-        if (!strcmp(dir, "AVANZAR"))         { m[0]=1; m[2]=1; }
-        else if (!strcmp(dir, "RETROCEDER")) { m[1]=1; m[3]=1; }
-        else if (!strcmp(dir, "IZQUIERDA"))  { m[0]=1; m[3]=1; }
-        else if (!strcmp(dir, "DERECHA"))    { m[1]=1; m[2]=1; }
-
-        gpio_set_level(LED1_GPIO, m[0]); gpio_set_level(LED2_GPIO, m[1]); 
-        gpio_set_level(LED3_GPIO, m[2]); gpio_set_level(LED4_GPIO, m[3]); 
+        if (!strcmp(dir, "AVANZAR"))         motor_mover(MOTOR_ADELANTE);
+        else if (!strcmp(dir, "RETROCEDER")) motor_mover(MOTOR_ATRAS);
+        else if (!strcmp(dir, "IZQUIERDA"))  motor_mover(MOTOR_IZQUIERDA);
+        else if (!strcmp(dir, "DERECHA"))    motor_mover(MOTOR_DERECHA);
+        else                                 motor_mover(MOTOR_PARAR);   // cualquier otro comando detiene
     }
     return httpd_resp_send(req, "OK", HTTPD_RESP_USE_STRLEN);
 }
 
 static esp_err_t light_get_handler(httpd_req_t *req) {
     char buf[100], val[10];
-    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK && 
+    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK &&
         httpd_query_key_value(buf, "val", val, sizeof(val)) == ESP_OK) {
-        
+
         ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, atoi(val));
         ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
     }

@@ -65,4 +65,5 @@ C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/wifi
 C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/mqtt_manager/libmqtt_manager.a
 C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/adc_sensor/libadc_sensor.a
 C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/dht11_sensor/libdht11_sensor.a
+C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/motor_driver/libmotor_driver.a
 C:/Users/David/workspace/ESP32_PROYECTO_TALLER2_REORGANIZADO1/build/esp-idf/main/libmain.a

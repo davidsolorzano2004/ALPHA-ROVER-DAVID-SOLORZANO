@@ -1,0 +1,6 @@
+idf_component_register(
+    SRCS "motor_driver.c"
+    INCLUDE_DIRS "include"
+    REQUIRES driver
+    PRIV_REQUIRES freertos log
+)
